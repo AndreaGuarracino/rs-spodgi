@@ -1,6 +1,7 @@
 use std::env;
 use std::process;
 
+
 use rs_spodgi::Config;
 
 fn main() {
@@ -12,11 +13,9 @@ fn main() {
     });
 
     if let Ok(lines) = rs_spodgi::read_lines(config.filename) {
-        // Consumes the iterator, returns an (Optional) String
-        for line in lines {
-            if let Ok(ip) = line {
-                println!("{}", ip);
-            }
-        }
+        rs_spodgi::write_lines(lines).unwrap_or_else(|err| {
+            println!("Problem parsing the input file: {}", err);
+            process::exit(1);
+        });
     }
 }
