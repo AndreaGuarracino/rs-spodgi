@@ -40,18 +40,7 @@ pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
 pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str, &'static str> {
     let mut position_in_path: u64;
     let mut next_position_in_path: u64;
-    let mut link_orientation: &str;
     let mut node_to_length: HashMap<String, u64> = HashMap::new();
-
-    let mut node;
-    let mut orientation;
-
-    let mut node_term;
-    let mut node_orientation;
-    let mut node_orientation_long;
-
-    let mut beg;
-    let mut end;
 
     let prefix_faldo = &Namespace::new(
         "faldo".to_string(),
@@ -88,43 +77,50 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
     graph.add_namespace(prefix_path);
 
     let a = graph.create_uri_node_from_namespace_and_id(
-        prefix_rdf, "type"
+        prefix_rdf, "type",
     );
+
+    let writer = TurtleWriter::new(graph.namespaces());
+
+    print!("{}", writer.write_base_uri(&graph));
+    println!("{}", writer.write_prefixes(&graph));
 
     // Consumes the iterator, returns an (Optional) String
     for line in lines {
         if let Ok(ip) = line {
             let tokens: Vec<&str> = ip.split("\t").collect();
 
+            let mut triples: Vec<Triple> = vec![];
+
             match tokens[0] {
                 "S" => {
                     //println!("node:{} a vg:Node ;\n\trdf:value \"{}\" .", tokens[1], tokens[2]);
                     let subject = graph.create_uri_node_from_namespace_and_id(
-                        prefix_node, tokens[1]
+                        prefix_node, tokens[1],
                     );
 
-                    graph.add_triple(&Triple::new(
+                    triples.push(Triple::new(
                         &subject,
                         &a,
                         &graph.create_uri_node_from_namespace_and_id(
-                            prefix_vg, "Node"
-                        )
+                            prefix_vg, "Node",
+                        ),
                     ));
 
-                    graph.add_triple(&Triple::new(
+                    triples.push(Triple::new(
                         &subject,
                         &graph.create_uri_node_from_namespace_and_id(
-                            prefix_rdf, "value"
+                            prefix_rdf, "value",
                         ),
                         &graph.create_uri_node_from_namespace_and_id(
-                            prefix_vg, tokens[2]
-                        )
+                            prefix_vg, tokens[2],
+                        ),
                     ));
 
                     node_to_length.insert(tokens[1].parse().unwrap(), tokens[2].len() as u64);
                 }
                 "L" => {
-                    link_orientation = "linksForwardToForward";
+                    let mut link_orientation = "linksForwardToForward";
 
                     if tokens[2] == "+" && tokens[4] == "-" {
                         link_orientation = "linksForwardToReverse";
@@ -137,19 +133,29 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                     }
 
                     //println!("node:{}\n\tvg:{} node:{} .", tokens[1], link_orientation, tokens[3]);
-                    graph.add_triple(&Triple::new(
+                    triples.push(Triple::new(
                         &graph.create_uri_node_from_namespace_and_id(
-                            prefix_node, tokens[1]
+                            prefix_node, tokens[1],
                         ),
                         &graph.create_uri_node_from_namespace_and_id(
-                            prefix_vg, link_orientation
+                            prefix_vg, link_orientation,
                         ),
-                        &graph.create_literal_node(tokens[3].to_string())
+                        &graph.create_literal_node(tokens[3].to_string()),
                     ));
                 }
                 "P" => {
+                    let mut node;
+                    let mut orientation;
+
+                    let mut node_term;
+                    let mut node_orientation;
+                    let mut node_orientation_long;
+
+                    let mut beg;
+                    let mut end;
+
                     //println!("<{}> a vg:Path .", tokens[1]);
-                    graph.add_triple(&Triple::new(
+                    triples.push(Triple::new(
                         &graph.create_uri_node_from_namespace_and_id(
                             prefix_path, tokens[1]
                         ),
@@ -172,21 +178,21 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
 
                         let subject = graph.create_uri_node(&Uri::new(uri_string));
 
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &a,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_vg, "Step"
                             )
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &a,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "Region"
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_vg, "rank"
@@ -195,7 +201,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 format!("{}", step_position + 1)
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_vg, "path"
@@ -227,7 +233,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         end = tokens[1].to_owned() + node_orientation + next_position_in_path.to_string().as_str();
 
                         //println!("\t\tvg:{} node:{} ;\n\t\tfaldo:begin <{}> ;\n\t\tfaldo:end <{}> . ", node_term, node, beg, end);
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_vg, node_term
@@ -239,14 +245,14 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
 
                         let beg_node= &graph.create_uri_node(&Uri::new(beg));
                         let end_node= &graph.create_uri_node(&Uri::new(end));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "begin"
                             ),
                             &beg_node,
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "end"
@@ -255,21 +261,21 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         ));
 
                         //println!("\t\t<{}> a faldo:ExactPosition,\n\t\t\tfaldo:{} ;\n\t\t\tfaldo:position {} ;\n\t\t\tfaldo:reference <{}> . ", beg, node_orientation_long, position_in_path, tokens[1]);
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &beg_node,
                             &a,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "ExactPosition"
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &beg_node,
                             &a,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, node_orientation_long
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &beg_node,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "position"
@@ -278,7 +284,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 format!("{}", position_in_path)
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &beg_node,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "reference"
@@ -289,21 +295,21 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         ));
 
                         //println!("\t\t<{}> a faldo:ExactPosition,\n\t\t\tfaldo:{} ;\n\t\t\tfaldo:position {} ;\n\t\t\tfaldo:reference <{}> . ", end, node_orientation_long, next_position_in_path, tokens[1]);
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &end_node,
                             &a,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "ExactPosition"
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &end_node,
                             &a,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, node_orientation_long
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &end_node,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "position"
@@ -312,7 +318,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 format!("{}", next_position_in_path)
                             ),
                         ));
-                        graph.add_triple(&Triple::new(
+                        triples.push(Triple::new(
                             &end_node,
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_faldo, "reference"
@@ -330,11 +336,12 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                     return Err("the input file is not a valid GFA");
                 }
             };
+
+            println!("{}", writer.write_triples_on_the_fly(&graph, triples).unwrap());
         }
     }
 
-    let writer = TurtleWriter::new(graph.namespaces());
-    println!("{}", writer.write_to_string(&graph).unwrap());
+    //println!("{}", writer.write_to_string(&graph).unwrap());
 
     return Ok("Done");
 }
