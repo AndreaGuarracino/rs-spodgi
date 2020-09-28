@@ -12,22 +12,6 @@ use rdf::uri::Uri;
 use rdf::triple::Triple;
 use rdf::namespace::Namespace;
 
-pub struct Config {
-    pub filename: String,
-}
-
-impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() != 2 {
-            return Err("just one argument is accepted");
-        }
-
-        let filename = args[1].clone();
-
-        Ok(Config { filename })
-    }
-}
-
 // The output is wrapped in a Result to allow matching on errors
 // Returns an Iterator to the Reader of the lines of the file.
 pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
