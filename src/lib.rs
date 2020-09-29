@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 
 use rdf::writer::turtle_writer::TurtleWriter;
-use rdf::writer::rdf_writer::RdfWriter; // Necessary to be able to call 'writer.write_to_string(...)'
+//use rdf::writer::rdf_writer::RdfWriter; // Necessary to be able to call 'writer.write_to_string(...)'
 
 use rdf::graph::Graph;
 use rdf::uri::Uri;
@@ -67,7 +67,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
     let writer = TurtleWriter::new(graph.namespaces());
 
     print!("{}", writer.write_base_uri(&graph));
-    println!("{}", writer.write_prefixes(&graph));
+    print!("{}", writer.write_prefixes(&graph));
 
     // Consumes the iterator, returns an (Optional) String
     for line in lines {
@@ -96,8 +96,8 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         &graph.create_uri_node_from_namespace_and_id(
                             prefix_rdf, "value",
                         ),
-                        &graph.create_uri_node_from_namespace_and_id(
-                            prefix_vg, tokens[2],
+                        &graph.create_literal_node(
+                            tokens[2].to_string()
                         ),
                     ));
 
@@ -124,7 +124,9 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         &graph.create_uri_node_from_namespace_and_id(
                             prefix_vg, link_orientation,
                         ),
-                        &graph.create_literal_node(tokens[3].to_string()),
+                        &graph.create_uri_node_from_namespace_and_id(
+                            prefix_node, tokens[3],
+                        ),
                     ));
                 }
                 "P" => {
@@ -145,7 +147,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         ),
                         &a,
                         &graph.create_uri_node_from_namespace_and_id(
-                            prefix_vg, "path"
+                            prefix_vg, "Path"
                         )
                     ));
 
@@ -179,7 +181,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
-                                prefix_vg, "rank"
+                                prefix_vg, "Rank"
                             ),
                             &graph.create_literal_node(
                                 format!("{}", step_position + 1)
@@ -188,7 +190,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         triples.push(Triple::new(
                             &subject,
                             &graph.create_uri_node_from_namespace_and_id(
-                                prefix_vg, "path"
+                                prefix_vg, "Path"
                             ),
                             &graph.create_uri_node_from_namespace_and_id(
                                 prefix_path, tokens[1]
@@ -199,7 +201,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         node = &step[..(step.len() - 1)];
                         orientation = &step[(step.len() - 1)..];
 
-                        node_term = "node";
+                        node_term = "Node";
                         node_orientation = "f";
                         node_orientation_long = "ForwardStrandPosition";
 
@@ -262,7 +264,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         triples.push(Triple::new(
                             &beg_node,
                             &graph.create_uri_node_from_namespace_and_id(
-                                prefix_faldo, "position"
+                                prefix_faldo, "Position"
                             ),
                             &graph.create_literal_node(
                                 format!("{}", position_in_path)
@@ -296,7 +298,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                         triples.push(Triple::new(
                             &end_node,
                             &graph.create_uri_node_from_namespace_and_id(
-                                prefix_faldo, "position"
+                                prefix_faldo, "Position"
                             ),
                             &graph.create_literal_node(
                                 format!("{}", next_position_in_path)

@@ -1,0 +1,10 @@
+H	VN:Z:1.0
+S	1	CAAATAAG	DP:i:1	RC:i:8
+L	1	+	3	+	0M
+L	1	+	2	+	0M
+S	2	A	DP:i:0	RC:i:0
+S	3	G	DP:i:1	RC:i:1
+L	2	-	3	-	0M
+L	3	-	1	+	0M
+P	x	1+,3+	*
+P	y	2-,3-,1+	*
