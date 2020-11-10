@@ -267,8 +267,8 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                     prefix_faldo, "position",
                                 ),
                                 &graph.create_literal_node_with_data_type(
-                                    format!("{}", position_in_path)
-                                    , &XmlDataTypes::Integer.to_uri()
+                                    format!("{}", position_in_path),
+                                    &XmlDataTypes::UnsignedLong.to_uri()
                                 )
                             ));
                             triples.push(Triple::new(
@@ -302,8 +302,8 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                     prefix_faldo, "position",
                                 ),
                                 &graph.create_literal_node_with_data_type(
-                                    format!("{}", position_in_path)
-                                    , &XmlDataTypes::Integer.to_uri()
+                                    format!("{}", position_in_path),
+                                    &XmlDataTypes::UnsignedLong.to_uri()
                                 )
                             ));
                             triples.push(Triple::new(
