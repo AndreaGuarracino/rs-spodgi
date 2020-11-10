@@ -181,16 +181,16 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                             triples.push(Triple::new(
                                 &subject,
                                 &graph.create_uri_node_from_namespace_and_id(
-                                    prefix_vg, "Rank",
+                                    prefix_vg, "rank",
                                 ),
                                 &graph.create_literal_node(
-                                    format!("{}", step_position + 1)
+                                    (step_position + 1).to_string()
                                 ),
                             ));
                             triples.push(Triple::new(
                                 &subject,
                                 &graph.create_uri_node_from_namespace_and_id(
-                                    prefix_vg, "Path",
+                                    prefix_vg, "path",
                                 ),
                                 &graph.create_uri_node_from_namespace_and_id(
                                     prefix_path, tokens[1],
@@ -201,7 +201,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                             node = &step[..(step.len() - 1)];
                             orientation = &step[(step.len() - 1)..];
 
-                            node_term = "Node";
+                            node_term = "node";
                             node_orientation = "f";
                             node_orientation_long = "ForwardStrandPosition";
 
@@ -264,7 +264,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                             triples.push(Triple::new(
                                 &beg_node,
                                 &graph.create_uri_node_from_namespace_and_id(
-                                    prefix_faldo, "Position",
+                                    prefix_faldo, "position",
                                 ),
                                 &graph.create_literal_node_with_data_type(
                                     format!("{}", position_in_path)
@@ -299,7 +299,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                             triples.push(Triple::new(
                                 &end_node,
                                 &graph.create_uri_node_from_namespace_and_id(
-                                    prefix_faldo, "Position",
+                                    prefix_faldo, "position",
                                 ),
                                 &graph.create_literal_node_with_data_type(
                                     format!("{}", position_in_path)
