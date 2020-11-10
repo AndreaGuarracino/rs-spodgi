@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 use std::collections::HashMap;
-
+use rdf::specs::xml_specs::XmlDataTypes;
 
 use rdf::writer::turtle_writer::TurtleWriter;
 //use rdf::writer::rdf_writer::RdfWriter; // Necessary to be able to call 'writer.write_to_string(...)'
@@ -52,7 +52,6 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
     );
 
     let mut graph = Graph::new(None);
-
     graph.add_namespace(prefix_faldo);
     graph.add_namespace(prefix_rdf);
     graph.add_namespace(prefix_vg);
@@ -267,9 +266,10 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 &graph.create_uri_node_from_namespace_and_id(
                                     prefix_faldo, "Position",
                                 ),
-                                &graph.create_literal_node(
+                                &graph.create_literal_node_with_data_type(
                                     format!("{}", position_in_path)
-                                ),
+                                    , &XmlDataTypes::Integer.to_uri()
+                                )
                             ));
                             triples.push(Triple::new(
                                 &beg_node,
@@ -301,9 +301,10 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 &graph.create_uri_node_from_namespace_and_id(
                                     prefix_faldo, "Position",
                                 ),
-                                &graph.create_literal_node(
-                                    format!("{}", next_position_in_path)
-                                ),
+                                &graph.create_literal_node_with_data_type(
+                                    format!("{}", position_in_path)
+                                    , &XmlDataTypes::Integer.to_uri()
+                                )
                             ));
                             triples.push(Triple::new(
                                 &end_node,
