@@ -183,8 +183,9 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 &graph.create_uri_node_from_namespace_and_id(
                                     prefix_vg, "rank",
                                 ),
-                                &graph.create_literal_node(
-                                    (step_position + 1).to_string()
+                                &graph.create_literal_node_with_data_type(
+                                    (step_position + 1).to_string(),
+                                    &XmlDataTypes::Integer.to_uri()
                                 ),
                             ));
                             triples.push(Triple::new(
@@ -267,8 +268,8 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                     prefix_faldo, "position",
                                 ),
                                 &graph.create_literal_node_with_data_type(
-                                    format!("{}", position_in_path),
-                                    &XmlDataTypes::UnsignedLong.to_uri()
+                                    position_in_path.to_string(),
+                                    &XmlDataTypes::Integer.to_uri()
                                 )
                             ));
                             triples.push(Triple::new(
@@ -302,8 +303,8 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                     prefix_faldo, "position",
                                 ),
                                 &graph.create_literal_node_with_data_type(
-                                    format!("{}", position_in_path),
-                                    &XmlDataTypes::UnsignedLong.to_uri()
+                                    position_in_path.to_string(),
+                                    &XmlDataTypes::Integer.to_uri()
                                 )
                             ));
                             triples.push(Triple::new(
