@@ -267,9 +267,10 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 &graph.create_uri_node_from_namespace_and_id(
                                     prefix_faldo, "Position",
                                 ),
-                                &graph.create_literal_node(
+                                &graph.create_literal_node_with_data_type(
                                     format!("{}", position_in_path)
-                                ),
+                                    , &Uri::new("http://www.w3.org/2001/XMLSchema#integer".to_string())
+                                )
                             ));
                             triples.push(Triple::new(
                                 &beg_node,
@@ -301,9 +302,10 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                                 &graph.create_uri_node_from_namespace_and_id(
                                     prefix_faldo, "Position",
                                 ),
-                                &graph.create_literal_node(
-                                    format!("{}", next_position_in_path)
-                                ),
+                                &graph.create_literal_node_with_data_type(
+                                    format!("{}", position_in_path)
+                                    , &Uri::new("http://www.w3.org/2001/XMLSchema#integer".to_string())
+                                )
                             ));
                             triples.push(Triple::new(
                                 &end_node,
