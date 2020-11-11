@@ -1,0 +1,37 @@
+H	VN:Z:1.0
+S	1	CAAATAAG	DP:i:1	RC:i:8
+L	1	+	3	+	0M
+L	1	+	2	+	0M
+S	2	A	DP:i:0	RC:i:0
+L	2	+	5	+	0M
+L	2	+	4	+	0M
+S	3	G	DP:i:1	RC:i:1
+L	3	+	5	+	0M
+L	3	+	4	+	0M
+S	4	T	DP:i:0	RC:i:0
+L	4	+	6	+	0M
+S	5	C	DP:i:1	RC:i:1
+L	5	+	6	+	0M
+S	6	TTG	DP:i:1	RC:i:3
+L	6	+	8	+	0M
+L	6	+	7	+	0M
+S	7	A	DP:i:0	RC:i:0
+L	7	+	9	+	0M
+S	8	G	DP:i:1	RC:i:1
+L	8	+	9	+	0M
+S	9	AAATTTTCTGGAGTTCTAT	DP:i:1	RC:i:19
+L	9	+	11	+	0M
+L	9	+	10	+	0M
+S	10	A	DP:i:0	RC:i:0
+L	10	+	12	+	0M
+S	11	T	DP:i:1	RC:i:1
+L	11	+	12	+	0M
+S	12	ATAT	DP:i:1	RC:i:4
+L	12	+	14	+	0M
+L	12	+	13	+	0M
+S	13	A	DP:i:0	RC:i:0
+L	13	+	15	+	0M
+S	14	T	DP:i:1	RC:i:1
+L	14	+	15	+	0M
+S	15	CCAACTCTCTG	DP:i:1	RC:i:11
+P	x	1+,3+,5+,6+,8+,9+,11+,12+,14+,15+,	*

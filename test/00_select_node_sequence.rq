@@ -1,0 +1,4 @@
+PREFIX node: <http://example.org/vg/node/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?sequence WHERE {node:1 rdf:value ?sequence}

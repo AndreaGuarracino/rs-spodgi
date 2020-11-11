@@ -1,6 +1,6 @@
 # rs-spodgi
 
-An (incomplete) counterpart of [spodgi](https://github.com/pangenome/spodgi) implemented in Rust.
+A(n incomplete) counterpart of [spodgi](https://github.com/pangenome/spodgi) implemented in Rust.
 
 The functionality implemented is a line-by-line converter from [GFA](https://github.com/GFA-spec/GFA-spec/blob/master/GFA1.md) to [RDF (turtle)](https://www.w3.org/TR/turtle/), which avoids loading the entire input graph in memory.
 

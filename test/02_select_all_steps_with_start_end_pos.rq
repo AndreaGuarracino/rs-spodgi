@@ -1,0 +1,22 @@
+# Get all steps in the pangenome build, with their start and end positions
+
+PREFIX vg: <http://biohackathon.org/resource/vg#>
+PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+
+SELECT
+    ?step
+    ?bp
+    ?ep
+    ?path
+WHERE {
+    ?step a vg:Step;
+        faldo:begin ?bp ;
+        faldo:end ?ep .
+
+    ?bp a faldo:ExactPosition ;
+        faldo:position ?begin .
+
+    ?ep a faldo:ExactPosition ;
+        faldo:reference ?path ;
+        faldo:position ?end .
+}
