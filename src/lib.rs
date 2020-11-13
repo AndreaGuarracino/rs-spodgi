@@ -327,7 +327,7 @@ pub fn write_lines(lines: io::Lines<io::BufReader<File>>) -> Result<&'static str
                 }
             };
 
-            println!("{}", writer.write_triples_on_the_fly(&graph, triples, false).unwrap());
+            println!("{}", writer.write_triples_on_the_fly( triples, false).unwrap());
         }
     }
 
