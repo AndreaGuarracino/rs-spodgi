@@ -32,3 +32,19 @@ OPTIONS:
 ```
 ./target/release/rs-spodgi -g test/t_small.gfa > t_small.ttl
 ```
+
+### docker
+
+You can build a docker image locally using the `Dockerfile`:
+
+```
+git clone --recursive https://github.com/AndreaGuarracino/rs-spodgi
+cd rs-spodgi
+docker build . --file Dockerfile --tag rs-spodgi
+```
+
+and run it with
+
+```
+docker run --rm -it -v ${PWD}/test/:/test rs-spodgi --gfa test/t.gfa
+```
