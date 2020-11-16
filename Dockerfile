@@ -10,5 +10,5 @@ FROM debian:stable-slim
 
 COPY --from=rust /rs-spodgi/target/release/rs-spodgi /usr/bin
 
-ENTRYPOINT [ "rs-spodgi" ]
+CMD [ "rs-spodgi" ]
 

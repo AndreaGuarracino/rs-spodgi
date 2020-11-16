@@ -40,11 +40,11 @@ You can build a docker image locally using the `Dockerfile`:
 ```
 git clone --recursive https://github.com/AndreaGuarracino/rs-spodgi
 cd rs-spodgi
-docker build . --file Dockerfile --tag rs-spodgi
+docker build . --file Dockerfile --tag rs_spodgi_img
 ```
 
 and run it with
 
 ```
-docker run --rm -it -v ${PWD}/test/:/test rs-spodgi --gfa test/t.gfa
+docker run --rm -it -v ${PWD}/test/:/test rs_spodgi_img rs-spodgi --gfa test/t.gfa
 ```
